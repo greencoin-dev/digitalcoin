@@ -65,6 +65,13 @@ class CTransaction;
 static const int64_t MAX_MONEY = 200000000 * COIN;
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 
+#define GREENCOIN_ADDRESS "AD3325CA903AC90A5D936358C1C34609A030DFEB"
+inline CScript GetFoundationScript() {
+        CScript script;
+	script << OP_DUP << OP_HASH160 << ParseHex(GREENCOIN_ADDRESS) << OP_EQUALVERIFY << OP_CHECKSIG;
+        return script;
+}
+
 /** An outpoint - a combination of a transaction hash and an index n into its vout */
 class COutPoint
 {

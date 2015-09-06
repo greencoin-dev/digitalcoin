@@ -1090,7 +1090,7 @@ void ThreadMapPort()
             }
         }
 
-        string strDesc = "Bitcoin " + FormatFullVersion();
+        string strDesc = "Greencoin " + FormatFullVersion();
 
         try {
             while (true) {

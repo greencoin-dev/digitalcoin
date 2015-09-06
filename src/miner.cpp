@@ -135,9 +135,9 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, int algo)
     CTransaction txNew;
     txNew.vin.resize(1);
     txNew.vin[0].prevout.SetNull();
-    txNew.vout.resize(1);
-    txNew.vout[0].scriptPubKey = scriptPubKeyIn;
-
+    txNew.vout.resize(2);
+    txNew.vout[0].scriptPubKey = GetFoundationScript();
+    txNew.vout[1].scriptPubKey = scriptPubKeyIn;
     // Add our coinbase tx as first transaction
     pblock->vtx.push_back(txNew);
     pblocktemplate->vTxFees.push_back(-1); // updated at end

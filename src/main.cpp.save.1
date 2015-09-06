@@ -1298,7 +1298,6 @@ unsigned int ComputeMinWork(unsigned int nBase, int64_t nTime)
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, int algo)
 {
    int nHeight = pindexLast->nHeight;
-
    if (nHeight < V2_FORK)
    {
 	return GetNextWorkRequiredV1(pindexLast, pblock, algo);
@@ -1313,7 +1312,13 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, int algo)
 {
    unsigned int nProofOfWorkLimit = Params().ProofOfWorkLimit(algo).GetCompact();
+   int nHeight = pindexLast->nHeight + 1;
 
+    // Testnet Fixed Diff
+    if (TestNet())
+    {
+	return nProofOfWorkLimit;
+    }
     // Genesis block
     if (pindexLast == NULL)
         return nProofOfWorkLimit;
@@ -1347,7 +1352,7 @@ unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHe
     // Retarget
     CBigNum bnNew;
     bnNew.SetCompact(pindexLast->nBits);
-    bnNew *= nActualTimespan;
+    bnNew *= nTargetTimespan;
     bnNew /= nTargetTimespan;
 
     if (bnNew > Params().ProofOfWorkLimit(algo))
@@ -1943,7 +1948,7 @@ bool ConnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex, C
                                  REJECT_INVALID, "bad-txns-inputs-missingorspent");
 
 	    // Check that the Foundation Is Paid
-	    if(tx.vout[0].scriptPubKey != GetFoundationScript())
+	    if(tx.vout[0].scriptPubKey != GREENCOIN_SCRIPT)
 		return state.DoS(100, error("ConnectBlock() : coinbase does not pay to the charity in the first output"));
 
 	    int64_t greencoinAmount =  GetBlockValue(pindex->nHeight, 0) / 2;
@@ -2553,11 +2558,11 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CDiskBlockPos* dbp)
                              REJECT_INVALID, "bad-diffbits");
 
 	 if (TestNet() && block.GetAlgo() != ALGO_SCRYPT )
-            return state.Invalid(error("AcceptBlock() : incorrect hasing algo, only scrypt accepted until block %u", V2_FORK),
+            return state.Invalid(error("AcceptBlock() : incorrect hashing algo, only scrypt accepted until block %u", V2_FORK),
 			    REJECT_INVALID, "bad-hashalgo");
 
-	 else if(!TestNet() && nHeight < V2_FORK && block.GetAlgo() != ALGO_SCRYPT)
-               return state.Invalid(error("AcceptBlock() : incorrect hasing algo, only scrypt accepted until block %u", V2_FORK),
+	 else if(!TestNet() && nHeight < V3_FORK && block.GetAlgo() != ALGO_SCRYPT)
+               return state.Invalid(error("AcceptBlock() : incorrect hashing algo, only scrypt accepted until block %u", V3_FORK),
                            REJECT_INVALID, "bad-hashalgo");
 
         // Check timestamp against prev

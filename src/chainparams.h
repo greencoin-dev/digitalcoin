@@ -10,7 +10,6 @@
 #include "uint256.h"
 #include "util.h"
 #include "core.h"
-
 #include <vector>
 
 using namespace std;

@@ -62,13 +62,8 @@ static const unsigned int DEFAULT_MAX_ORPHAN_BLOCKS = 750;
 static const int COINBASE_MATURITY = 5;
 
 /** DGC V3 Hard Fork Block */
-static const int V3_FORK = 1028000;
+static const int V2_FORK = 1028000;
 static const int MAX_BLOCK_ALGO_COUNT = 3;
-
-/* Other DGC Fork Blocks */
-static const int DIFF_SWITCH_HEIGHT = 476280;
-static const int INFLATION_FIX_HEIGHT = 523800;
-static const int DIFF2_SWITCH_HEIGHT = 625800;
 
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
@@ -96,8 +91,6 @@ static const unsigned char REJECT_NONSTANDARD = 0x40;
 static const unsigned char REJECT_DUST = 0x41;
 static const unsigned char REJECT_INSUFFICIENTFEE = 0x42;
 static const unsigned char REJECT_CHECKPOINT = 0x43;
-
-
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
 extern CTxMemPool mempool;
@@ -887,7 +880,7 @@ public:
     CBigNum GetBlockWorkAdjusted() const
     {
         CBigNum bnRes;
-	if ((TestNet() && (nHeight >= 1)) || (!TestNet() && nHeight >= V3_FORK)) 
+	if ((TestNet() && (nHeight >= 1)) || (!TestNet() && nHeight >= V2_FORK)) 
 	{
 		// Adjusted Block Work is the Sum of work of this block and the most recent work of one block of each algo
 		CBigNum nBlockWork = GetBlockWork();
